@@ -38,6 +38,18 @@ export function hasDataUrl(src) {
   return src && src.startsWith('data:')
 }
 
+export function updateFlipType(flips, {id, type}) {
+  return flips.map(flip =>
+    flip.id === id
+      ? {
+          ...flip,
+          type,
+          ref: flip.ref,
+        }
+      : flip
+  )
+}
+
 const randomIndex = currentIndex => Math.floor(Math.random() * currentIndex)
 
 export function getRandomHint() {

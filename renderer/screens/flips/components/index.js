@@ -66,6 +66,7 @@ export function FlipCard({flipService, onDelete}) {
   const {colors} = useTheme()
 
   const isDraft = type === FlipType.Draft
+  const isViewable = [FlipType.Published, FlipType.Archived].includes(type)
   const isPending = [FlipType.Publishing, FlipType.Deleting].includes(type)
 
   return (
@@ -112,6 +113,17 @@ export function FlipCard({flipService, onDelete}) {
         </Box>
         {!isPending && (
           <FlipCardMenu>
+            {isViewable && (
+              <FlipCardMenuItem>
+                <NextLink href={`/flips/view?id=${id}`}>
+                  <Flex>
+                    <FlipCardMenuItemIcon name="view" size={5} mr={2} />
+                    {t('View flip')}
+                  </Flex>
+                </NextLink>
+              </FlipCardMenuItem>
+            )}
+
             {isDraft && (
               <>
                 <FlipCardMenuItem onClick={() => send('PUBLISH', {id})}>
