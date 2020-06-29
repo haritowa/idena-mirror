@@ -1,9 +1,9 @@
 {
-  "name": "idena-desktop",
+  "name": "idena-mirror",
   "productName": "Idena",
-  "version": "0.0.1",
+  "version": "1.1.3",
   "main": "main/index.js",
-  "repository": "idena-network/idena-desktop",
+  "repository": "haritowa/idena-mirror",
   "scripts": {
     "start": "electron .",
     "build": "next build renderer && next export renderer",
