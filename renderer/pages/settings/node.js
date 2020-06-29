@@ -30,6 +30,7 @@ import {
   useNodeDispatch,
 } from '../../shared/providers/node-context'
 import {NODE_EVENT, NODE_COMMAND} from '../../../main/channels'
+import HideDestructiveElements from '../../shared/components/nondestructive'
 
 function NodeSettings() {
   const {addNotification} = useNotificationDispatch()
@@ -127,179 +128,181 @@ function NodeSettings() {
 
   return (
     <SettingsLayout>
-      <Box py={theme.spacings.xlarge}>
-        <Flex align="center">
-          <Box>
-            <Switcher
-              isChecked={settings.runInternalNode}
-              onChange={() => {
-                toggleRunInternalNode(!settings.runInternalNode)
-              }}
-              bgOn={theme.colors.primary}
-            />
-          </Box>
-          <div
-            style={{
-              ...margin(0, 0, 0, rem(theme.spacings.small12)),
-            }}
-          >
-            <strong>{t('Run built-in node')}</strong>
-            <div>{t('Use built-in node to have automatic updates')}</div>
-          </div>
-          {settings.runInternalNode && nodeFailed && (
+      <HideDestructiveElements>
+        <Box py={theme.spacings.xlarge}>
+          <Flex align="center">
+            <Box>
+              <Switcher
+                isChecked={settings.runInternalNode}
+                onChange={() => {
+                  toggleRunInternalNode(!settings.runInternalNode)
+                }}
+                bgOn={theme.colors.primary}
+              />
+            </Box>
             <div
               style={{
                 ...margin(0, 0, 0, rem(theme.spacings.small12)),
               }}
             >
-              <Text css={{color: theme.colors.warning}}>
-                {t('Node failed to start')}
-              </Text>
-              <Button
-                variant="secondary"
-                css={{marginLeft: 10}}
-                onClick={() => tryRestartNode()}
+              <strong>{t('Run built-in node')}</strong>
+              <div>{t('Use built-in node to have automatic updates')}</div>
+            </div>
+            {settings.runInternalNode && nodeFailed && (
+              <div
+                style={{
+                  ...margin(0, 0, 0, rem(theme.spacings.small12)),
+                }}
               >
-                {t('Try restart')}
-              </Button>
-            </div>
-          )}
-        </Flex>
-      </Box>
-      <Box py={theme.spacings.large}>
-        <Flex align="center">
-          <Box>
-            <Switcher
-              isChecked={settings.useExternalNode}
-              onChange={() => {
-                toggleUseExternalNode(!settings.useExternalNode)
-              }}
-              bgOn={theme.colors.primary}
-            />
-          </Box>
-          <div
-            style={{
-              ...margin(0, 0, 0, rem(theme.spacings.small12)),
-            }}
-          >
-            <strong>{t('Connect to remote node')}</strong>
-            <div>
-              {t(
-                'Specify the Node address if you want to connect to remote node'
-              )}
-            </div>
-          </div>
-        </Flex>
-      </Box>
-      {settings.useExternalNode && (
-        <Box py={theme.spacings.xlarge}>
-          <Flex align="center">
-            <Label htmlFor="url" style={{width: 120}}>
-              {t('Node address')}
-            </Label>
-            <Input
-              id="url"
-              value={state.url}
-              onChange={e => dispatch({type: 'SET_URL', data: e.target.value})}
-              style={{
-                ...margin(0, theme.spacings.normal, 0, theme.spacings.small),
-                width: rem(300),
-              }}
-            />
-            <Button
-              onClick={() => {
-                saveExternalUrl(state.url)
-                notify()
-              }}
-            >
-              {t('Save')}
-            </Button>
-            <Divider vertical m={theme.spacings.small} />
-            <FlatButton
-              color={theme.colors.primary}
-              onClick={() => {
-                dispatch({type: 'SET_URL', data: BASE_API_URL})
-                saveExternalUrl(BASE_API_URL)
-                notify()
-              }}
-            >
-              {t('Use default')}
-            </FlatButton>
+                <Text css={{color: theme.colors.warning}}>
+                  {t('Node failed to start')}
+                </Text>
+                <Button
+                  variant="secondary"
+                  css={{marginLeft: 10}}
+                  onClick={() => tryRestartNode()}
+                >
+                  {t('Try restart')}
+                </Button>
+              </div>
+            )}
           </Flex>
-          <Flex align="center" css={{marginTop: 10}}>
-            <Label htmlFor="key" style={{width: 120}}>
-              {`${t('Node api key')} `}
-            </Label>
-            <Box style={{position: 'relative'}}>
+        </Box>
+        <Box py={theme.spacings.large}>
+          <Flex align="center">
+            <Box>
+              <Switcher
+                isChecked={settings.useExternalNode}
+                onChange={() => {
+                  toggleUseExternalNode(!settings.useExternalNode)
+                }}
+                bgOn={theme.colors.primary}
+              />
+            </Box>
+            <div
+              style={{
+                ...margin(0, 0, 0, rem(theme.spacings.small12)),
+              }}
+            >
+              <strong>{t('Connect to remote node')}</strong>
+              <div>
+                {t(
+                  'Specify the Node address if you want to connect to remote node'
+                )}
+              </div>
+            </div>
+          </Flex>
+        </Box>
+        {settings.useExternalNode && (
+          <Box py={theme.spacings.xlarge}>
+            <Flex align="center">
+              <Label htmlFor="url" style={{width: 120}}>
+                {t('Node address')}
+              </Label>
               <Input
-                id="key"
-                value={state.apiKey}
-                type={revealApiKey ? 'text' : 'password'}
-                onChange={e =>
-                  dispatch({type: 'SET_API_KEY', data: e.target.value})
-                }
+                id="url"
+                value={state.url}
+                onChange={e => dispatch({type: 'SET_URL', data: e.target.value})}
                 style={{
                   ...margin(0, theme.spacings.normal, 0, theme.spacings.small),
                   width: rem(300),
                 }}
-              ></Input>
-              <Box
-                style={{
-                  background: theme.colors.gray2,
-                  ...borderRadius('right', rem(6)),
-                  cursor: 'pointer',
-                  fontSize: rem(20),
-                  position: 'absolute',
-                  ...padding(0, rem(8)),
-                  top: 0,
-                  height: '100%',
-                  right: '12px',
+              />
+              <Button
+                onClick={() => {
+                  saveExternalUrl(state.url)
+                  notify()
                 }}
-                onClick={() => setRevealApiKey(!revealApiKey)}
               >
-                {revealApiKey ? (
-                  <FiEyeOff style={{transform: 'translate(0, 50%)'}} />
-                ) : (
-                  <FiEye style={{transform: 'translate(0, 50%)'}} />
-                )}
+                {t('Save')}
+              </Button>
+              <Divider vertical m={theme.spacings.small} />
+              <FlatButton
+                color={theme.colors.primary}
+                onClick={() => {
+                  dispatch({type: 'SET_URL', data: BASE_API_URL})
+                  saveExternalUrl(BASE_API_URL)
+                  notify()
+                }}
+              >
+                {t('Use default')}
+              </FlatButton>
+            </Flex>
+            <Flex align="center" css={{marginTop: 10}}>
+              <Label htmlFor="key" style={{width: 120}}>
+                {`${t('Node api key')} `}
+              </Label>
+              <Box style={{position: 'relative'}}>
+                <Input
+                  id="key"
+                  value={state.apiKey}
+                  type={revealApiKey ? 'text' : 'password'}
+                  onChange={e =>
+                    dispatch({type: 'SET_API_KEY', data: e.target.value})
+                  }
+                  style={{
+                    ...margin(0, theme.spacings.normal, 0, theme.spacings.small),
+                    width: rem(300),
+                  }}
+                ></Input>
+                <Box
+                  style={{
+                    background: theme.colors.gray2,
+                    ...borderRadius('right', rem(6)),
+                    cursor: 'pointer',
+                    fontSize: rem(20),
+                    position: 'absolute',
+                    ...padding(0, rem(8)),
+                    top: 0,
+                    height: '100%',
+                    right: '12px',
+                  }}
+                  onClick={() => setRevealApiKey(!revealApiKey)}
+                >
+                  {revealApiKey ? (
+                    <FiEyeOff style={{transform: 'translate(0, 50%)'}} />
+                  ) : (
+                    <FiEye style={{transform: 'translate(0, 50%)'}} />
+                  )}
+                </Box>
               </Box>
-            </Box>
-            <Button
-              onClick={() => {
-                saveExternalApiKey(state.apiKey)
-                notify()
+              <Button
+                onClick={() => {
+                  saveExternalApiKey(state.apiKey)
+                  notify()
+                }}
+              >
+                {t('Save')}
+              </Button>
+            </Flex>
+          </Box>
+        )}
+        {!settings.useExternalNode && (
+          <div>
+            <SubHeading
+              css={margin(theme.spacings.medium24, 0, theme.spacings.medium16, 0)}
+            >
+              {t('Built-in node log')}
+            </SubHeading>
+            <div
+              ref={logsRef}
+              direction="column"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: 300,
+                overflow: 'auto',
+                wordWrap: 'break-word',
+                border: `1px solid ${theme.colors.muted}`,
               }}
             >
-              {t('Save')}
-            </Button>
-          </Flex>
-        </Box>
-      )}
-      {!settings.useExternalNode && (
-        <div>
-          <SubHeading
-            css={margin(theme.spacings.medium24, 0, theme.spacings.medium16, 0)}
-          >
-            {t('Built-in node log')}
-          </SubHeading>
-          <div
-            ref={logsRef}
-            direction="column"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              height: 300,
-              overflow: 'auto',
-              wordWrap: 'break-word',
-              border: `1px solid ${theme.colors.muted}`,
-            }}
-          >
-            {state.logs.map((log, idx) => (
-              <Ansi key={idx}>{log}</Ansi>
-            ))}
+              {state.logs.map((log, idx) => (
+                <Ansi key={idx}>{log}</Ansi>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </HideDestructiveElements>
     </SettingsLayout>
   )
 }

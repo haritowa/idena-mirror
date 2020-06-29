@@ -22,6 +22,7 @@ import {
   hasPersistedValidationResults,
 } from '../../screens/validation/utils'
 import {persistItem} from '../../shared/utils/persist'
+import HideDestructiveElements from '../../shared/components/nondestructive'
 
 function Dashboard() {
   const router = useRouter()
@@ -66,33 +67,37 @@ function Dashboard() {
           w={rem(700)}
         >
           <PageTitle>{t('Profile')}</PageTitle>
-          <Actions>
-            <IconLink
-              disabled={invitesCount === 0}
-              href="/contacts/new-invite"
-              icon={<i className="icon icon--add_contact" />}
-            >
-              {t('Invite')}
-            </IconLink>
-            <IconLink
-              href="/flips/new"
-              icon={<i className="icon icon--photo" />}
-            >
-              {t('New flip')}
-            </IconLink>
-            <IconLink
-              icon={<i className="icon icon--delete" />}
-              disabled={!canTerminate}
-              onClick={() => {
-                setIsWithdrawStakeFormOpen(!isWithdrawStakeFormOpen)
-              }}
-            >
-              {t('Terminate')}
-            </IconLink>
-          </Actions>
+          <HideDestructiveElements>
+            <Actions>
+              <IconLink
+                disabled={invitesCount === 0}
+                href="/contacts/new-invite"
+                icon={<i className="icon icon--add_contact" />}
+              >
+                {t('Invite')}
+              </IconLink>
+              <IconLink
+                href="/flips/new"
+                icon={<i className="icon icon--photo" />}
+              >
+                {t('New flip')}
+              </IconLink>
+              <IconLink
+                icon={<i className="icon icon--delete" />}
+                disabled={!canTerminate}
+                onClick={() => {
+                  setIsWithdrawStakeFormOpen(!isWithdrawStakeFormOpen)
+                }}
+              >
+                {t('Terminate')}
+              </IconLink>
+            </Actions>
+          </HideDestructiveElements>
           <UserInfo />
-          <MinerStatusSwitcher />
-          <NetProfile />
+          <HideDestructiveElements>
+            <MinerStatusSwitcher />
+            <NetProfile />
+          </HideDestructiveElements>
           <ActivateInviteForm />
         </Box>
 

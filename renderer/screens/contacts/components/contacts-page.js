@@ -11,6 +11,7 @@ import Sidebar from './sidebar'
 import SendInviteForm from './send-invite-form'
 import InviteDetails from './invite-details'
 import {useChainState} from '../../../shared/providers/chain-context'
+import HideDestructiveElements from '../../../shared/components/nondestructive'
 
 function ContactsPage({showNewInviteForm = false}) {
   const {t} = useTranslation()
@@ -32,61 +33,63 @@ function ContactsPage({showNewInviteForm = false}) {
   return (
     <ContactProvider>
       <Layout syncing={syncing} offline={offline} loading={loading}>
-        <Flex>
-          <Sidebar
-            onSelectContact={setSelectedContact}
-            onSelectInvite={invite => {
-              setSelectedInvite(invite)
-              setShowInvite(true)
-            }}
-            onNewInvite={() => setIsSendInviteOpen(true)}
-          />
-          <Box
-            css={{
-              flexBasis: 0,
-              flexGrow: 1,
-            }}
-          >
-            {showInvite && (
-              <InviteDetails
-                dbkey={selectedInvite.id}
-                code={selectedInvite && selectedInvite.key}
-                onClose={() => {
-                  setShowInvite(false)
-                  setSelectedInvite(null)
-                }}
-                onSelect={invite => {
-                  setShowInvite(true)
-                  setSelectedInvite(invite)
-                }}
-              />
-            )}
-
-            {showContact && <ContactDetails {...selectedContact} />}
-
-            {!showContact && !showInvite && !selectedInvite && (
-              <Placeholder
-                icon={<FiUsers />}
-                text={
-                  <>
-                    {t('You haven’t selected contacts yet.')} <br />
-                  </>
-                }
-              />
-            )}
-          </Box>
-
-          <Drawer show={isSendInviteOpen} onHide={handleCloseSendInvite}>
-            <SendInviteForm
-              onSuccess={invite => {
-                handleCloseSendInvite()
+        <HideDestructiveElements>
+          <Flex>
+            <Sidebar
+              onSelectContact={setSelectedContact}
+              onSelectInvite={invite => {
                 setSelectedInvite(invite)
                 setShowInvite(true)
               }}
-              onFail={handleCloseSendInvite}
+              onNewInvite={() => setIsSendInviteOpen(true)}
             />
-          </Drawer>
-        </Flex>
+            <Box
+              css={{
+                flexBasis: 0,
+                flexGrow: 1,
+              }}
+            >
+              {showInvite && (
+                <InviteDetails
+                  dbkey={selectedInvite.id}
+                  code={selectedInvite && selectedInvite.key}
+                  onClose={() => {
+                    setShowInvite(false)
+                    setSelectedInvite(null)
+                  }}
+                  onSelect={invite => {
+                    setShowInvite(true)
+                    setSelectedInvite(invite)
+                  }}
+                />
+              )}
+
+              {showContact && <ContactDetails {...selectedContact} />}
+
+              {!showContact && !showInvite && !selectedInvite && (
+                <Placeholder
+                  icon={<FiUsers />}
+                  text={
+                    <>
+                      {t('You haven’t selected contacts yet.')} <br />
+                    </>
+                  }
+                />
+              )}
+            </Box>
+
+            <Drawer show={isSendInviteOpen} onHide={handleCloseSendInvite}>
+              <SendInviteForm
+                onSuccess={invite => {
+                  handleCloseSendInvite()
+                  setSelectedInvite(invite)
+                  setShowInvite(true)
+                }}
+                onFail={handleCloseSendInvite}
+              />
+            </Drawer>
+          </Flex>
+        </HideDestructiveElements>
       </Layout>
     </ContactProvider>
   )
