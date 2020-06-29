@@ -11,6 +11,7 @@ const {
 } = electron
 
 const isDev = require('electron-is-dev')
+const allowDestructiveActions = false
 
 const flips = require('./stores/flips')
 const invites = require('./stores/invites')
@@ -30,6 +31,8 @@ process.once('loaded', () => {
   global.loadKeyword = loadKeyword
 
   global.logger = logger
+
+  global.allowDestructiveActions = false
 
   global.isDev = isDev
   global.prepareDb = prepareDb
