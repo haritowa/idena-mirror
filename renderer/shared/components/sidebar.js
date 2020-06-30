@@ -18,6 +18,7 @@ import {usePoll} from '../hooks/use-interval'
 import {Tooltip} from './tooltip'
 import {pluralize} from '../utils/string'
 import {parsePersistedValidationState} from '../../screens/validation/utils'
+import HideDestructiveElements from '../components/nondestructive'
 
 function Sidebar() {
   return (
@@ -162,24 +163,28 @@ function Nav() {
         >
           {t('My Idena') || nickname}
         </NavItem>
-        <NavItem
-          href="/wallets"
-          icon={<i className="icon icon--menu_wallets" />}
-        >
-          {t('Wallets')}
-        </NavItem>
+        <HideDestructiveElements>
+          <NavItem
+            href="/wallets"
+            icon={<i className="icon icon--menu_wallets" />}
+          >
+            {t('Wallets')}
+          </NavItem>
+        </HideDestructiveElements>
         <NavItem
           href="/flips/list"
           icon={<i className="icon icon--menu_gallery" />}
         >
           {t('Flips')}
         </NavItem>
-        <NavItem
-          href="/contacts"
-          icon={<i className="icon icon--menu_contacts" />}
-        >
-          {t('Contacts')}
-        </NavItem>
+        <HideDestructiveElements>
+          <NavItem
+            href="/contacts"
+            icon={<i className="icon icon--menu_contacts" />}
+          >
+            {t('Contacts')}
+          </NavItem>
+        </HideDestructiveElements>
         <NavItem href="/settings" icon={<i className="icon icon--settings" />}>
           {t('Settings')}
         </NavItem>
@@ -274,13 +279,15 @@ function ActionPanel() {
       {currentPeriod !== EpochPeriod.None && (
         <Block title={t('Current period')}>{currentPeriod}</Block>
       )}
-      <Block title={t('My current task')}>
-        <CurrentTask
-          epoch={epoch.epoch}
-          period={currentPeriod}
-          identity={identity}
-        />
-      </Block>
+      <HideDestructiveElements>
+        <Block title={t('My current task')}>
+          <CurrentTask
+            epoch={epoch.epoch}
+            period={currentPeriod}
+            identity={identity}
+          />
+        </Block>
+      </HideDestructiveElements>
       {currentPeriod === EpochPeriod.None && (
         <Block title={t('Next validation')}>
           {new Date(nextValidation).toLocaleString()}
