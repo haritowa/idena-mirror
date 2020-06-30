@@ -19,6 +19,7 @@ import {useWallets} from '../../shared/hooks/use-wallets'
 import {useChainState} from '../../shared/providers/chain-context'
 import {FlatButton} from '../../shared/components/button'
 import {Spinner} from '../../shared/components/spinner'
+import HideDestructiveElements from '../../shared/components/nondestructive'
 
 export default function Index() {
   const {t} = useTranslation()
@@ -44,108 +45,110 @@ export default function Index() {
 
   return (
     <Layout syncing={syncing} offline={offline}>
-      <Box px={theme.spacings.xxxlarge} py={theme.spacings.large}>
-        <PageTitle>{t('Wallets')}</PageTitle>
-        <Box>
-          {status === 'fetching' && (
-            <Flex>
-              <Box style={{transform: 'scale(0.35) translateX(24px)'}}>
-                <Spinner color={theme.colors.primary} />
-              </Box>
-            </Flex>
-          )}
-          {['success', 'polling'].includes(status) && (
-            <>
-              <Flex css={{justifyContent: 'space-between', marginBottom: 24}}>
+      <HideDestructiveElements>
+        <Box px={theme.spacings.xxxlarge} py={theme.spacings.large}>
+          <PageTitle>{t('Wallets')}</PageTitle>
+          <Box>
+            {status === 'fetching' && (
+              <Flex>
+                <Box style={{transform: 'scale(0.35) translateX(24px)'}}>
+                  <Spinner color={theme.colors.primary} />
+                </Box>
+              </Flex>
+            )}
+            {['success', 'polling'].includes(status) && (
+              <>
+                <Flex css={{justifyContent: 'space-between', marginBottom: 24}}>
+                  <div>
+                    <TotalAmount
+                      amount={totalAmount}
+                      percentChanges={0}
+                      amountChanges={0}
+                    />
+                  </div>
+                  <div>
+                    <Actions>
+                      <IconLink
+                        disabled={activeWallet && activeWallet.isStake}
+                        icon={<i className="icon icon--withdraw" />}
+                        onClick={() => {
+                          setIsTransferFormOpen(!isTransferFormOpen)
+                        }}
+                      >
+                        {t('Send')}
+                      </IconLink>
+                      <IconLink
+                        disabled={activeWallet && activeWallet.isStake}
+                        icon={<i className="icon icon--deposit" />}
+                        onClick={() => {
+                          setIsReceiveFormOpen(!isReceiveFormOpen)
+                        }}
+                      >
+                        {t('Receive')}
+                      </IconLink>
+                    </Actions>
+                  </div>
+                </Flex>
                 <div>
-                  <TotalAmount
-                    amount={totalAmount}
-                    percentChanges={0}
-                    amountChanges={0}
+                  <WalletList
+                    wallets={wallets}
+                    activeWallet={activeWallet}
+                    onChangeActiveWallet={wallet => setActiveWallet(wallet)}
+                    onSend={() => setIsTransferFormOpen(true)}
+                    onReceive={() => setIsReceiveFormOpen(true)}
+                    onWithdrawStake={() => setIsWithdrawStakeFormOpen(true)}
                   />
                 </div>
-                <div>
-                  <Actions>
-                    <IconLink
-                      disabled={activeWallet && activeWallet.isStake}
-                      icon={<i className="icon icon--withdraw" />}
-                      onClick={() => {
-                        setIsTransferFormOpen(!isTransferFormOpen)
-                      }}
-                    >
-                      {t('Send')}
-                    </IconLink>
-                    <IconLink
-                      disabled={activeWallet && activeWallet.isStake}
-                      icon={<i className="icon icon--deposit" />}
-                      onClick={() => {
-                        setIsReceiveFormOpen(!isReceiveFormOpen)
-                      }}
-                    >
-                      {t('Receive')}
-                    </IconLink>
-                  </Actions>
-                </div>
-              </Flex>
-              <div>
-                <WalletList
-                  wallets={wallets}
-                  activeWallet={activeWallet}
-                  onChangeActiveWallet={wallet => setActiveWallet(wallet)}
-                  onSend={() => setIsTransferFormOpen(true)}
-                  onReceive={() => setIsReceiveFormOpen(true)}
-                  onWithdrawStake={() => setIsWithdrawStakeFormOpen(true)}
-                />
-              </div>
 
-              <SubHeading>{t('Recent transactions')}</SubHeading>
+                <SubHeading>{t('Recent transactions')}</SubHeading>
 
-              <FlatButton
-                color={theme.colors.primary}
-                onClick={() => {
-                  global.openExternal(
-                    `https://scan.idena.io/address?address=${activeWallet.address}#rewards`
-                  )
-                }}
-                style={{
-                  marginBottom: rem(19),
-                }}
-              >
-                <span>{t('See Explorer for rewards and penalties')} </span>
-
-                <FiChevronRight
-                  style={{
-                    position: 'relative',
-                    top: '3px',
+                <FlatButton
+                  color={theme.colors.primary}
+                  onClick={() => {
+                    global.openExternal(
+                      `https://scan.idena.io/address?address=${activeWallet.address}#rewards`
+                    )
                   }}
-                  fontSize={rem(19)}
-                />
-              </FlatButton>
-              <WalletActions transactions={txs} />
-            </>
-          )}
+                  style={{
+                    marginBottom: rem(19),
+                  }}
+                >
+                  <span>{t('See Explorer for rewards and penalties')} </span>
+
+                  <FiChevronRight
+                    style={{
+                      position: 'relative',
+                      top: '3px',
+                    }}
+                    fontSize={rem(19)}
+                  />
+                </FlatButton>
+                <WalletActions transactions={txs} />
+              </>
+            )}
+          </Box>
+          <Drawer show={isTransferFormOpen} onHide={handleCloseTransferForm}>
+            <TransferForm
+              onSuccess={handleCloseTransferForm}
+              onFail={handleCloseTransferForm}
+            />
+          </Drawer>
+
+          <Drawer show={isReceiveFormOpen} onHide={handleCloseReceiveForm}>
+            <ReceiveForm address={wallets[0] && wallets[0].address} />
+          </Drawer>
+
+          <Drawer
+            show={isWithdrawStakeFormOpen}
+            onHide={handleCloseWithdrawStakeForm}
+          >
+            <KillForm
+              onSuccess={handleCloseWithdrawStakeForm}
+              onFail={handleCloseWithdrawStakeForm}
+            />
+          </Drawer>
         </Box>
-        <Drawer show={isTransferFormOpen} onHide={handleCloseTransferForm}>
-          <TransferForm
-            onSuccess={handleCloseTransferForm}
-            onFail={handleCloseTransferForm}
-          />
-        </Drawer>
-
-        <Drawer show={isReceiveFormOpen} onHide={handleCloseReceiveForm}>
-          <ReceiveForm address={wallets[0] && wallets[0].address} />
-        </Drawer>
-
-        <Drawer
-          show={isWithdrawStakeFormOpen}
-          onHide={handleCloseWithdrawStakeForm}
-        >
-          <KillForm
-            onSuccess={handleCloseWithdrawStakeForm}
-            onFail={handleCloseWithdrawStakeForm}
-          />
-        </Drawer>
-      </Box>
+      </HideDestructiveElements>
     </Layout>
   )
 }

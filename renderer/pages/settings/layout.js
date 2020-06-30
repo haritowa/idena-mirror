@@ -9,6 +9,7 @@ import Flex from '../../shared/components/flex'
 import FlipToolbar, {
   FlipToolbarItem,
 } from '../../screens/flips/components/toolbar'
+import HideDestructiveElements from '../../shared/components/nondestructive'
 
 function SettingsLayout({children}) {
   const router = useRouter()
@@ -19,28 +20,30 @@ function SettingsLayout({children}) {
       <Box px={theme.spacings.xxxlarge} py={theme.spacings.large}>
         <Box>
           <PageTitle>{t('Settings')}</PageTitle>
-          <FlipToolbar>
-            <Flex>
-              <FlipToolbarItem
-                key="privateKey"
-                onClick={() => {
-                  router.push('/settings')
-                }}
-                isCurrent={router.pathname === '/settings'}
-              >
-                {t('General')}
-              </FlipToolbarItem>
-              <FlipToolbarItem
-                key="node"
-                onClick={() => {
-                  router.push('/settings/node')
-                }}
-                isCurrent={router.pathname === '/settings/node'}
-              >
-                {t('Node')}
-              </FlipToolbarItem>
-            </Flex>
-          </FlipToolbar>
+          <HideDestructiveElements>
+            <FlipToolbar>
+              <Flex>
+                <FlipToolbarItem
+                  key="privateKey"
+                  onClick={() => {
+                    router.push('/settings')
+                  }}
+                  isCurrent={router.pathname === '/settings'}
+                >
+                  {t('General')}
+                </FlipToolbarItem>
+                <FlipToolbarItem
+                  key="node"
+                  onClick={() => {
+                    router.push('/settings/node')
+                  }}
+                  isCurrent={router.pathname === '/settings/node'}
+                >
+                  {t('Node')}
+                </FlipToolbarItem>
+              </Flex>
+            </FlipToolbar>
+          </HideDestructiveElements>
         </Box>
         {children}
       </Box>

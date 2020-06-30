@@ -27,6 +27,7 @@ import {
 } from '../../shared/providers/settings-context'
 import {AVAILABLE_LANGS} from '../../i18n'
 import {useEpochState} from '../../shared/providers/epoch-context'
+import HideDestructiveElements from '../../shared/components/nondestructive'
 
 const {clear: clearFlips} = global.flipStore || {}
 const inviteDb = global.invitesDb || {}
@@ -39,48 +40,50 @@ function Settings() {
   const {runInternalNode, useExternalNode} = useSettingsState()
   return (
     <SettingsLayout>
-      {global.isDev && (
-        <>
-          <Section title={t('Flips')}>
-            <Box>
-              <Button
-                onClick={() => {
-                  clearFlips()
-                  addNotification({title: t('Flips deleted')})
-                }}
-              >
-                {t('Clear flips')}
-              </Button>
-            </Box>
-            <Box my={theme.spacings.small}>
-              <Button
-                onClick={() => {
-                  if (epoch) {
-                    archiveFlips(epoch.epoch)
-                    addNotification({title: t('Flips archived')})
-                  }
-                }}
-              >
-                {t('Archive flips')}
-              </Button>
-            </Box>
-          </Section>
-          <Section title={t('Invites')}>
-            <Box my={theme.spacings.small}>
-              <Button
-                onClick={() => {
-                  inviteDb.clearInvites()
-                  addNotification({title: t('Invites removed')})
-                }}
-              >
-                {t('Clear invites')}
-              </Button>
-            </Box>
-          </Section>
-        </>
-      )}
-      <ExportPK />
-      {runInternalNode && !useExternalNode && <ImportPK />}
+      <HideDestructiveElements>
+        {global.isDev && (
+          <>
+            <Section title={t('Flips')}>
+              <Box>
+                <Button
+                  onClick={() => {
+                    clearFlips()
+                    addNotification({title: t('Flips deleted')})
+                  }}
+                >
+                  {t('Clear flips')}
+                </Button>
+              </Box>
+              <Box my={theme.spacings.small}>
+                <Button
+                  onClick={() => {
+                    if (epoch) {
+                      archiveFlips(epoch.epoch)
+                      addNotification({title: t('Flips archived')})
+                    }
+                  }}
+                >
+                  {t('Archive flips')}
+                </Button>
+              </Box>
+            </Section>
+            <Section title={t('Invites')}>
+              <Box my={theme.spacings.small}>
+                <Button
+                  onClick={() => {
+                    inviteDb.clearInvites()
+                    addNotification({title: t('Invites removed')})
+                  }}
+                >
+                  {t('Clear invites')}
+                </Button>
+              </Box>
+            </Section>
+          </>
+        )}
+        <ExportPK />
+        {runInternalNode && !useExternalNode && <ImportPK />}
+      </HideDestructiveElements>
       <LocaleSwitcher />
     </SettingsLayout>
   )

@@ -73,3 +73,12 @@ install:
 
 before_script:
   - if [[ "$TRAVIS_TAG" != "" ]]; then npm --no-git-tag-version version ${TRAVIS_TAG:1}; fi
+
+after_success:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x scripts/discord-send.sh
+  - ./send.sh success $DISCORD_WEBHOOK
+after_failure:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x scripts/discord-send.sh
+  - ./send.sh failure $DISCORD_WEBHOOK
