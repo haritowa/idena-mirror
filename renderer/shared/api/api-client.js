@@ -2,7 +2,7 @@ import axios from 'axios'
 import {loadPersistentState} from '../utils/persist'
 
 export const BASE_INTERNAL_API_PORT = 9119
-export const BASE_API_URL = 'http://localhost:9009'
+export const BASE_API_URL = global.customizedRemoteUrl != '' ? global.customizedRemoteUrl : 'http://localhost:9009'
 
 function getParams() {
   const state = loadPersistentState('settings')

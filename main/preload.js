@@ -11,7 +11,12 @@ const {
 } = electron
 
 const isDev = require('electron-is-dev')
+
 const allowDestructiveActions = false
+
+const customizedRemoteUrl = ''
+const customizedExternalApiKey = ''
+const customizedUseExternalUrl = false
 
 const flips = require('./stores/flips')
 const invites = require('./stores/invites')
@@ -46,6 +51,10 @@ process.once('loaded', () => {
   global.setZoomLevel = level => webFrame.setZoomLevel(level)
 
   global.appVersion = app.getVersion()
+
+  global.customizedRemoteUrl = app.commandLine.getSwitchValue("customizedRemoteUrl")
+  global.customizedExternalApiKey = app.commandLine.getSwitchValue("customizedExternalApiKey")
+  global.customizedUseExternalUrl = global.customizedExternalApiKey != ''
 
   global.env = {
     NODE_ENV: process.env.NODE_ENV,

@@ -33,10 +33,10 @@ const initialState = {
   tcpPort: 50505,
   ipfsPort: 50506,
   uiVersion: global.appVersion,
-  useExternalNode: false,
-  runInternalNode: true,
+  useExternalNode: global.customizedUseExternalUrl,
+  runInternalNode: !global.customizedUseExternalUrl,
   internalApiKey: randomKey(),
-  externalApiKey: '',
+  externalApiKey: global.customizedExternalApiKey,
   lng: AVAILABLE_LANGS[0],
 }
 
