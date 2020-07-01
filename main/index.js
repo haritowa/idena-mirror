@@ -317,11 +317,13 @@ app.on('ready', async () => {
 
     createMainWindow()
 
-    if (!isDev) {
+    if (!isDev && global.allowDestructiveActions) {
       createMenu()
     }
 
-    createTray()
+    if (global.allowDestructiveActions) {
+      createTray()
+    }
 
     if (isWin) {
       checkForUpdates()
